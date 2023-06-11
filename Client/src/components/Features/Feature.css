@@ -1,0 +1,43 @@
+.vertical-timeline-element-content-arrow {
+    display: none !important;
+  
+}
+
+.vertical-timeline-element-content:before {
+ display: none !important;
+}
+
+.vertical-timeline-element-content:after {
+    display: none !important;
+}
+.vertical-timeline-element-content {
+  border-bottom: none !important;
+}
+
+.code-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: bold;
+  width: 24px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: #1d1836;
+  color: #fff;
+}
+
+.vertical-timeline {
+   width: 86%;
+  max-width: 1170px;
+  margin: 0 auto;
+  position: relative;
+  padding: 2em 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex; /* Add this line */
+  flex-direction: column;
+  justify-content: center; /* Add this line */
+}
+
+
