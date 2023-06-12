@@ -1,0 +1,2 @@
+git push Code master
+git pull Code master
