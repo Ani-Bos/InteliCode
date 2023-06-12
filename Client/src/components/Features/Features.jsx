@@ -92,7 +92,7 @@ const Code = () => {
                 padding: "0.5rem",
                 margin: "2rem 1rem",
                 marginTop: "4rem", 
-                minWidth: "300px", 
+                minWidth: "280px", 
               }}
             >
               <div className="window">

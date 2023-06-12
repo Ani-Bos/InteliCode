@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import Login from "../../pages/Login/Login";
 
 const Hero = () => {
   return (
@@ -47,14 +49,17 @@ const Hero = () => {
             <div class="grid gap-8 items-start justify-center">
               <div class="relative group">
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-gradient-3-start to-gradient-3-end rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
-                <button class="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600">
+                <Link
+                  to="/login"
+                  class="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600"
+                >
                   <span class="flex items-center justify-center">
                     <span class="mx-6 text-center text-gray-100">
                       Get Started
                     </span>
                   </span>
                   <span class="pl-6 text-indigo-400 group-hover:text-gray-100 transition duration-200"></span>
-                </button>
+                </Link>
               </div>
             </div>
           </div>

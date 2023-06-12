@@ -22,7 +22,7 @@ module.exports = {
         "hero-pattern": "url('./images/herobg.png')",
       },
       fontSize: {
-        "6xl": "4.5rem",
+        "6xl": "4rem",
       },
 
       letterSpacing: {

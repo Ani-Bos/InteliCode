@@ -6,12 +6,21 @@ import Navbar from "../../components/Navbar/Navbar";
 import Features from "../../components/Features/Features";
 const Home = () => {
   return (
-    <div>
-      <Navbar />
-      <Hero />
-      <Main />
-      {/* <Features/> */}
-      <Footer/>
+         <div className="relative z-0 bg-primary">
+        <div
+          style={{
+            backgroundImage: `url('Images/herobg.png')`,
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+          }}
+        >
+          <Navbar />
+          <Hero />
+        </div>
+        <Main />
+        <Features />
+      <Footer />
     </div>
   );
 };
