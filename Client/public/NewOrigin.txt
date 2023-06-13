@@ -1,2 +1,22 @@
 git push Code master
 git pull Code master
+
+handleSignIn: This function handles the sign-in process. It first awaits the signInWithEmailAndPassword function, which authenticates the user with the provided email and password using the auth object. The userCr variable holds the response, and userCr.user represents the signed-in user's information. This information is logged to the console.
+
+The email, username, and profile picture (if available) are extracted from userCr.user and stored in cookies using the Cookies.set method. The profile picture is set to a default URL if it is not available.
+
+Next, an HTTP POST request is sent to http://localhost:5001/api/auth/login with the user's email using the axios.post method. The response is stored in the resp variable, and resp.data contains the data returned by the server.
+
+The authentication token from the server response is stored in a cookie using Cookies.set("auth-Tokensynex", res.authToken).
+
+Finally, the navigate function is called to redirect the user to the "/dashboard" route.
+
+handleSign: This function is called when there is a change in the input fields. It updates the credential state by merging the previous state with the new value of the input field using the spread operator ({ ...credential, [e.target.name]: e.target.value }).
+
+signinwithgoogle: This function handles signing in with Google. It uses the signInWithPopup function from the auth object to initiate the sign-in process. The signed-in user's email, name, and profile picture are extracted from the response and stored in cookies.
+
+An HTTP POST request is sent to http://localhost:5001/api/auth/createUser with the user's email and name. The response is stored in the user variable.
+
+If the res.mark property in the response is truthy, an HTTP POST request is sent to http://localhost:5001/api/auth/login with the user's email using the axios.post method. The authentication token from the response is stored in a cookie, and the user is redirected to "/dashboard" using window.location.replace("/dashboard").
+
+If res.mark is falsy, the authentication token from the previous response is stored in a cookie, and the user is redirected to "/dashboard" using the navigate function.

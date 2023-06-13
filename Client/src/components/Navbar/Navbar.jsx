@@ -56,12 +56,12 @@ const Navbar = () => {
                 <a href="/">Contact Us</a>
               </li>
               <li>
-                <a
+                {/* <a
                   href="/"
                   className="p-2 space-x-8 text-gray-400  h-10 hover:text-white hover:font-bold"
                 >
                   Login
-                </a>
+                </a> */}
               </li>
               <li>
                 <Link
