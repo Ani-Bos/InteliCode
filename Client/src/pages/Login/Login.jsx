@@ -58,7 +58,7 @@ const Login = (props) => {
     Cookies.set("email", email);
     Cookies.set("name", name);
 
-    const url = "http://localhost:5001/api/auth";
+    const url = "http://localhost:5000/api/auth";
     const user = await axios.post(`${url}/createUser`, {
       email: email,
       name: name,
@@ -137,21 +137,21 @@ const Login = (props) => {
               <div className="rounded-t mb-0 px-6 py-6">
                 <div className="text-center mb-3">
                   <h6 className="text-white text-sm font-regular">
-                    Sign in with
+                   Login with
                   </h6>
                 </div>
                 <div className="btn-wrapper text-center flex flex-col mt-4 justify-center">
-                  <button
+                  {/* <button
                     className="bg-white active:bg-gray-100 text-gray-800 font-semibold px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs justify-center mt-2 h-9"
                     type="button"
                     style={{ transition: "all .15s ease" }}
-                  >
+                  > */}
                     {/* <img alt="..." className="w-5 mr-1" src={FaGithub} /> */}
-                    <span>
+                    {/* <span>
                       <FaGithub className="w-5 mr-1" />
                     </span>
                     Github
-                  </button>
+                  </button> */}
                   <button
                     onClick={async () => {
                       await signinwithgoogle();
@@ -170,7 +170,7 @@ const Login = (props) => {
               </div>
               <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
                 <div className="text-white text-center mb-3 font-regualar">
-                  <small>Sign in with Email 📧</small>
+                  <small>Login with Email 📧</small>
                 </div>
                 <form>
                   <div className="relative w-full mb-3 mt-3">
@@ -245,7 +245,7 @@ const Login = (props) => {
                       type="button"
                       style={{ transition: "all .15s ease" }}
                     >
-                      Sign In
+                      Login
                     </button>
                   </div>
                 </form>

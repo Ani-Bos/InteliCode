@@ -3,10 +3,18 @@
   margin: 30px;
   border-radius: 6px;
   /* background-color: #1a1e22; */
-  background-color: #1a1e22;
+  /* background-color: #1a1e22; */
   color: #fff;
   width: calc(100% - 60px);
   overflow: hidden;
+   /* background: rgba(255,255,255,0.05); */
+  backdrop-Filter: blur(10px);
+  border-Radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-Shadow: 5px 5px 30px rgba(0,0,0,0.2);
+  border-Top: 1px solid rgba(255,255,255,0.2);
+  border-Left: 1px solid rgba(255,255,255,0.2);
+
 }
 /* body {
   font-family: Arial, Helvetica, sans-serif;
@@ -15,8 +23,15 @@
 
 .title-bar {
   height: 40px;
-  background-color: rgb(231 231 231 / 6%);
+  background-color: rgb(231 231 231 / 4%);
   position: relative;
+     /* background: rgba(255,255,255,0.05); */
+  backdrop-Filter: blur(10px);
+  border-Radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-Shadow: 5px 5px 30px rgba(0,0,0,0.2);
+  border-Top: 1px solid rgba(255,255,255,0.2);
+  border-Left: 1px solid rgba(255,255,255,0.2);
 }
 
 .title-text {
@@ -70,6 +85,7 @@
 }
 .title-button:nth-child(3) {
   background-color: #67f772;
+
 }
 
 .editor_wrap {

@@ -9,6 +9,7 @@ import Features from "./components/Features/Features";
 import Code from "./components/Code/Code";
 import Login from "./pages/Login/Login";
 import Dashboard from "./pages/DashBoard/DashBoard";
+import SignUp from "./pages/SignUp/SignUp";
 function App() {
   return (
     <Router>
@@ -16,6 +17,7 @@ function App() {
         <Route exact path="/" element={<Home />} />
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/dashboard" element={<Dashboard />} />
+        <Route exact path="/signup" element={<SignUp />} />
       </Routes>
     </Router>
   );
