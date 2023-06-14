@@ -10,6 +10,7 @@ import Code from "./components/Code/Code";
 import Login from "./pages/Login/Login";
 import Dashboard from "./pages/DashBoard/DashBoard";
 import SignUp from "./pages/SignUp/SignUp";
+import ResetPassword from "./components/ForgerPassword/ForgetPassword";
 function App() {
   return (
     <Router>
@@ -18,6 +19,7 @@ function App() {
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/dashboard" element={<Dashboard />} />
         <Route exact path="/signup" element={<SignUp />} />
+        <Route exact path="/reset" element={<ResetPassword />}></Route>
       </Routes>
     </Router>
   );

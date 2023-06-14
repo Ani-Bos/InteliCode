@@ -20,10 +20,10 @@ router.post("/createUser", async (req, res) => {
     // const salt=await bcrypt.genSalt(10);
     // const secPass=await bcrypt.hash(req.body.password,salt);
     user = await User.create({
-      name: req.body.name,
-      phone: req.body.phone,
+      name: req.body.name || "", // Make the "name" field optional
+      // phone: req.body.phone,
       email: req.body.email,
-      address: req.body.address,
+      // address: req.body.address,
     });
     const data = {
       id: user.id,

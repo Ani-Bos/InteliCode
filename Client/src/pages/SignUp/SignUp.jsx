@@ -1,41 +1,61 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, navigate } from "react-router-dom";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { auth, provider } from "../../firebase-config";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup , createUserWithEmailAndPassword} from "firebase/auth";
 import axios from "axios";
 import Cookies from "js-cookie";
 const SignUp = (props) => {
   let navigate = useNavigate();
   const [credential, setCredential] = useState({ email: "", password: "" });
   //It defines a state variable called credential using the useState hook which holds the user's email and password.
-  //The handleSignIn function is an asynchronous function that handles the sign-in process. It first calls the signInWithEmailAndPassword function  with the provided email and password to authenticate the user. The result is stored in the userCr variable.
-  const handleSignIn = async () => {
-    let userCr = await signInWithEmailAndPassword(
-      auth,
-      credential.email,
-      credential.password
-    );
-    console.log(userCr.user);
-    const email = userCr.user.email;
-    const name = credential.username;
-    const profilepic = userCr.user.photoURL;
-    Cookies.set(
-      "dp",
-      profilepic
-        ? profilepic
-        : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsGjDJxNoPQgkbqeBPV0yYH7CNMJwficf9hw&usqp=CAU"
-    );
-    Cookies.set("email", email);
-    Cookies.set("name", name);
-    const url = "http://localhost:5000/api/auth";
-    //server
-    const resp = await axios.post(`${url}/login`, { email: credential.email });
-    const res = resp.data;
-    Cookies.set("auth-Tokensynex", res.authToken);
-    navigate("/dashboard");
-  };
+  //The handleSignUp function is an asynchronous function that handles the sign-in process. It first calls the signInWithEmailAndPassword function  with the provided email and password to authenticate the user. The result is stored in the userCr variable.
+  const [error, setError] = useState(null);
+  const handleSignUp = async () => {
+      if (credential.password !== credential.confirmPassword) {
+        console.log("Password and confirm password do not match.");
+        // Example: set an error state in your component and render an error message
+        setError("Password and confirm password do not match.");
+        return;
+      }
+    try {
+      let userCr = await createUserWithEmailAndPassword(
+        auth,
+        credential.email,
+        credential.password
+      );
+      console.log(userCr.user);
+      const email = userCr.user.email;
+      const name = credential.username;
+      const profilepic = userCr.user.photoURL;
+      Cookies.set(
+        "dp",
+        profilepic
+          ? profilepic
+          : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsGjDJxNoPQgkbqeBPV0yYH7CNMJwficf9hw&usqp=CAU"
+      );
+      Cookies.set("email", email);
+      Cookies.set("name", name);
+      const url = "http://localhost:5000/api/auth";
+      // Server
+      const resp = await axios.post(`${url}/createUser`, {
+        email: credential.email,
+      });
+      const res = resp.data;
+      Cookies.set("auth-Tokensynex", res.authToken);
+      // Redirect to the dashboard page
+      window.location.href = "/dashboard";
+    } catch (error) {
+      // Handle authentication error
+      console.log(error);
+      // Display error message to the user
+      // Example: set an error state in your component and render an error message
+      // setError("Authentication failed. Please check your email and password.");
+      setError("Authentication failed.");
+    } 
+    };
+  
 
   const handleSign = (e) => {
     setCredential({ ...credential, [e.target.name]: e.target.value });
@@ -57,7 +77,7 @@ const SignUp = (props) => {
     Cookies.set("email", email);
     Cookies.set("name", name);
 
-    const url = "http://localhost:5001/api/auth";
+    const url = "http://localhost:5000/api/auth";
     const user = await axios.post(`${url}/createUser`, {
       email: email,
       name: name,
@@ -145,8 +165,8 @@ const SignUp = (props) => {
                     type="button"
                     style={{ transition: "all .15s ease" }}
                   > */}
-                    {/* <img alt="..." className="w-5 mr-1" src={FaGithub} /> */}
-                    {/* <span>
+                  {/* <img alt="..." className="w-5 mr-1" src={FaGithub} /> */}
+                  {/* <span>
                       <FaGithub className="w-5 mr-1" />
                     </span>
                     Github
@@ -216,10 +236,10 @@ const SignUp = (props) => {
 
                   <div className="relative w-full mb-3 mt-3">
                     <input
-                      value={credential.password}
+                      value={credential.confirmPassword}
                       onChange={handleSign}
                       type="password"
-                      name="password"
+                      name="confirmPassword"
                       className="border-0 px-3 py-3 placeholder-gray-400  text-white bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
                       placeholder="Confirm Password"
                       style={{
@@ -256,7 +276,7 @@ const SignUp = (props) => {
                           ? true
                           : false
                       }
-                      onClick={handleSignIn}
+                      onClick={handleSignUp}
                       className={`${
                         credential.email === "" || credential.password === ""
                           ? "bg-blue-500"
@@ -270,6 +290,11 @@ const SignUp = (props) => {
                     </button>
                   </div>
                 </form>
+                <div>
+                  {error && (
+                    <div className="text-red-500 text-sm">{error}</div>
+                  )}
+                </div>
               </div>
               <div className="px-5 py-2 text-xs flex justify-between items-center text-white">
                 <p>Already having an account?</p>
@@ -279,7 +304,7 @@ const SignUp = (props) => {
                   }}
                   className="py-2 px-5 bg-white border rounded-md hover:scale-110 duration-300 text-black"
                 >
-                 Login
+                  Login
                 </button>
               </div>
             </div>

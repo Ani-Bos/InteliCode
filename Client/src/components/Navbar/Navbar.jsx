@@ -65,7 +65,7 @@ const Navbar = () => {
               </li>
               <li>
                 <Link
-                  to="/login"
+                  to="/signup"
                   class="inline-block rounded-md  px-6 outline-1 py-1.5 text-base font-semibold leading-7 text-black shadow-sm ring-1 ring-white bg-white hover:bg-black hover:text-white drop-shadow-sm hover:ring-white"
                 >
                   Sign Up

@@ -3,13 +3,20 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaGithub} from "react-icons/fa";
 import { FcGoogle} from "react-icons/fc";
 import { auth, provider } from "../../firebase-config";
-import { signInWithEmailAndPassword, signInWithPopup ,  } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import axios from "axios";
-
+import ResetPassword from "../../components/ForgerPassword/ForgetPassword";
 import Cookies from "js-cookie";
+
 const Login = (props) => {
   let navigate = useNavigate();
+ 
   const [credential, setCredential] = useState({ email: "", password: "" });
+ 
   //It defines a state variable called credential using the useState hook which holds the user's email and password.
   //The handleSignIn function is an asynchronous function that handles the sign-in process. It first calls the signInWithEmailAndPassword function  with the provided email and password to authenticate the user. The result is stored in the userCr variable.
   const handleSignIn = async () => {
@@ -30,7 +37,7 @@ const Login = (props) => {
     );
     Cookies.set("email", email);
     Cookies.set("name", name);
-    const url = "http://localhost:5001/api/auth";
+    const url = "http://localhost:5000/api/auth";
     //server
     const resp = await axios.post(`${url}/login`, { email: credential.email });
     const res = resp.data;
@@ -79,34 +86,49 @@ const Login = (props) => {
     navigate("/dashboard");
   };
   
-  const signinwithgithub = async  () => {
-    const signin = await signInWithPopup(auth, provider);
-    const email = signin.user.email;
-    const name = signin.user.displayName;
-    const profilepic = signin.user.photoURL;
-    Cookies.set("dp", profilepic);
-    Cookies.set("email", email);
-    Cookies.set("name", name);
-    const url = "http://localhost:5001/api/auth";
-    const user = await axios.post(`${url}/createUser`, {
-      email: email,
-      name: name,
-    });
-    const res = user.data;
-    console.log(res);
-    if (res.mark) {
-      const login = await axios.post(`${url}/login`, {
-        email: Cookies.get("email"),
-      });
-      const data = login.data;
-      Cookies.set("auth-Tokensynex", data.authToken);
-      window.location.replace("/dashboard");
-      return;
+  const sendPasswordReset = async (email) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert("Password reset link sent!");
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
     }
-    Cookies.set("auth-Tokensynex", res.authToken);
-
-    navigate("/dashboard");
   };
+
+    const handleResetClick = () => {
+      navigate("/reset");
+    };
+
+
+  // const signinwithgithub = async  () => {
+  //   const signin = await signInWithPopup(auth, provider);
+  //   const email = signin.user.email;
+  //   const name = signin.user.displayName;
+  //   const profilepic = signin.user.photoURL;
+  //   Cookies.set("dp", profilepic);
+  //   Cookies.set("email", email);
+  //   Cookies.set("name", name);
+  //   const url = "http://localhost:5001/api/auth";
+  //   const user = await axios.post(`${url}/createUser`, {
+  //     email: email,
+  //     name: name,
+  //   });
+  //   const res = user.data;
+  //   console.log(res);
+  //   if (res.mark) {
+  //     const login = await axios.post(`${url}/login`, {
+  //       email: Cookies.get("email"),
+  //     });
+  //     const data = login.data;
+  //     Cookies.set("auth-Tokensynex", data.authToken);
+  //     window.location.replace("/dashboard");
+  //     return;
+  //   }
+  //   Cookies.set("auth-Tokensynex", res.authToken);
+
+  //   navigate("/dashboard");
+  // };
   
   return (
     <section className="absolute w-full h-full">
@@ -137,7 +159,7 @@ const Login = (props) => {
               <div className="rounded-t mb-0 px-6 py-6">
                 <div className="text-center mb-3">
                   <h6 className="text-white text-sm font-regular">
-                   Login with
+                    Login with
                   </h6>
                 </div>
                 <div className="btn-wrapper text-center flex flex-col mt-4 justify-center">
@@ -146,8 +168,8 @@ const Login = (props) => {
                     type="button"
                     style={{ transition: "all .15s ease" }}
                   > */}
-                    {/* <img alt="..." className="w-5 mr-1" src={FaGithub} /> */}
-                    {/* <span>
+                  {/* <img alt="..." className="w-5 mr-1" src={FaGithub} /> */}
+                  {/* <span>
                       <FaGithub className="w-5 mr-1" />
                     </span>
                     Github
@@ -249,6 +271,9 @@ const Login = (props) => {
                     </button>
                   </div>
                 </form>
+              </div>
+              <div className="px-5 py-2 text-xs flex justify-center items-center text-center text-white">
+                <button onClick={handleResetClick}>Forget your password?</button>
               </div>
               <div className="px-5 py-2 text-xs flex justify-between items-center text-white">
                 <p>Don't have an account?</p>
