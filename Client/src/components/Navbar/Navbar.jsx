@@ -1,8 +1,10 @@
 import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
+import Cookies from 'js-cookie'
 const Navbar = () => {
+  let navigate = useNavigate();
   const [navbar, setNavbar] = useState(false);
   return (
     <nav className="w-full">
@@ -47,13 +49,13 @@ const Navbar = () => {
           >
             <ul className="items-center justify-center space-y-8 mb-3 md:flex md:space-x-6 md:space-y-0 ">
               <li className="p-2 space-x-8 text-gray-400 h-10  rounded-md hover:text-white hover:font-bold">
-                <a href="/">Home</a>
+                <Link to="/">Home</Link>
               </li>
               <li className="p-2 text-gray-400 h-10 hover:text-white hover:font-bold">
-                <a href="/">Features</a>
+                <Link to="/">Features</Link>
               </li>
               <li className="p-2 space-x-8 text-gray-400  h-10 hover:text-white hover:font-bold">
-                <a href="/">Contact Us</a>
+                <Link to="/">Contact Us</Link>
               </li>
               <li>
                 {/* <a
@@ -63,15 +65,25 @@ const Navbar = () => {
                   Login
                 </a> */}
               </li>
-              <li>
-                <Link
-                  to="/signup"
-                  class="inline-block rounded-md  px-6 outline-1 py-1.5 text-base font-semibold leading-7 text-black shadow-sm ring-1 ring-white bg-white hover:bg-black hover:text-white drop-shadow-sm hover:ring-white"
-                >
-                  Sign Up
-                </Link>
-              </li>
-            </ul>
+             {!Cookies.get('auth-Tokensynex') ? (
+    <li>
+      <Link
+        to="/signup"
+        className="inline-block rounded-md  px-6 outline-1 py-1.5 text-base font-semibold leading-7 text-black shadow-sm ring-1 ring-white bg-white hover:bg-black hover:text-white drop-shadow-sm hover:ring-white"
+      >
+        Sign Up
+      </Link>
+    </li>
+  ) : (
+    <li>
+      <Link to="/dashboard">
+        <button className="inline-block rounded-md  px-6 outline-1 py-1.5 text-base font-semibold leading-7 text-black shadow-sm ring-1 ring-white bg-white hover:bg-black hover:text-white drop-shadow-sm hover:ring-white">
+          Dashboard
+        </button>
+      </Link>
+    </li>
+  )}
+</ul>
           </div>
         </div>
       </div>

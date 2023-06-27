@@ -9,7 +9,7 @@ import {
   sendPasswordResetEmail,
 } from "firebase/auth";
 import axios from "axios";
-import ResetPassword from "../../components/ForgerPassword/ForgetPassword";
+import ResetPassword from "../../components/ForgetPassword/ForgetPassword";
 import Cookies from "js-cookie";
 
 const Login = (props) => {

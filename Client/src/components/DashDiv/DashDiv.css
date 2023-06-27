@@ -1,0 +1,41 @@
+ .dashboard-container {
+  margin-top: 100px;
+}
+
+@media (min-width: 768px) {
+  .dashboard-container {
+    margin-left: 170px;
+  }
+}
+@media (max-width: 640px) {
+  .flex.items-center .h-6.w-6 {
+    margin-bottom: 0.5rem;
+  }
+} 
+
+/* Adjust the user logo size in mobile view */
+@media (max-width: 640px) {
+  .flex.flex-col.justify-center.items-center.h-full img.h-32 {
+    height: 4rem; /* Adjust the height as needed */
+    width: 4rem; /* Adjust the width as needed */
+  }
+}
+
+/* 
+.flex {
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+} */
+
+/* Adjust the alignment of the text and image within the flex container */
+.flex span,
+.flex img {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.custom-image {
+  width: 100%;
+  height: auto;
+}

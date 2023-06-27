@@ -10,7 +10,9 @@ import Code from "./components/Code/Code";
 import Login from "./pages/Login/Login";
 import Dashboard from "./pages/DashBoard/DashBoard";
 import SignUp from "./pages/SignUp/SignUp";
-import ResetPassword from "./components/ForgerPassword/ForgetPassword";
+import ResetPassword from "./components/ForgetPassword/ForgetPassword";
+import Canvas from "./components/Paint/Canvas";
+import Paint from "./components/Paint/PaintCanvas";
 function App() {
   return (
     <Router>
@@ -20,6 +22,7 @@ function App() {
         <Route exact path="/dashboard" element={<Dashboard />} />
         <Route exact path="/signup" element={<SignUp />} />
         <Route exact path="/reset" element={<ResetPassword />}></Route>
+        <Route exact path="/canvas" element={<Paint />}></Route>
       </Routes>
     </Router>
   );

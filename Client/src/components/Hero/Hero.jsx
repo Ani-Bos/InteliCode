@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Login from "../../pages/Login/Login";
+import "./Hero.css"
 
 const Hero = () => {
   return (
@@ -45,6 +46,8 @@ const Hero = () => {
           </div>
         </h1>
         <div className="">
+
+
           <div class="px-8 py-32 mb-4 ">
             <div class="grid gap-8 items-start justify-center">
               <div class="relative group">
@@ -63,6 +66,9 @@ const Hero = () => {
               </div>
             </div>
           </div>
+
+
+          
           <div className="color:black">
             <p>kdkdskl</p>
           </div>
