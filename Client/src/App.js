@@ -11,20 +11,22 @@ import Login from "./pages/Login/Login";
 import Dashboard from "./pages/DashBoard/DashBoard";
 import SignUp from "./pages/SignUp/SignUp";
 import ResetPassword from "./components/ForgetPassword/ForgetPassword";
-import Canvas from "./components/Paint/Canvas";
 import Paint from "./components/Paint/PaintCanvas";
+import Notes from "./components/Notes/Notes";
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route exact path="/" element={<Home />} />
-        <Route exact path="/login" element={<Login />} />
-        <Route exact path="/dashboard" element={<Dashboard />} />
-        <Route exact path="/signup" element={<SignUp />} />
-        <Route exact path="/reset" element={<ResetPassword />}></Route>
-        <Route exact path="/canvas" element={<Paint />}></Route>
-      </Routes>
-    </Router>
+    <Notes/>
+    // <Router>
+    //   <Routes>
+    //     <Route exact path="/" element={<Home />} />
+    //     <Route exact path="/login" element={<Login />} />
+    //     <Route exact path="/dashboard" element={<Dashboard />} />
+    //     <Route exact path="/signup" element={<SignUp />} />
+    //     <Route exact path="/reset" element={<ResetPassword />}></Route>
+    //     <Route exact path="/canvas" element={<Paint />}></Route>
+    //     <Route exact path="/notes" element={<Notes />}></Route>
+    //   </Routes>
+    // </Router>
   );
 }
 export default App;
