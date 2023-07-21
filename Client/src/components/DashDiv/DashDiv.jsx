@@ -12,7 +12,7 @@ const DashDiv = () => {
               src="./images/user.svg"
               alt="User Avatar"
             />
-            <span className="font-semibold ">boseaniket48</span>
+            <span className="font-semibold ">xyz123</span>
             <div className="flex mt-3">
               <img
                 className="h-6 w-6"
@@ -20,7 +20,7 @@ const DashDiv = () => {
                 alt="User Avatar"
               />
               <span className="mx-0 font-semibold">
-                500 <span className="text-gray-400 font-medium">Rank</span>
+                765 <span className="text-gray-400 font-medium">Rank</span>
               </span>
             </div>
 
@@ -30,7 +30,7 @@ const DashDiv = () => {
                   Current streak
                 </span>
 
-                <span className="justify-center align-center">37/690</span>
+                <span className="justify-center align-center">abd/def</span>
               </div>
               <img
                 className="h-24 w-24"
@@ -43,7 +43,7 @@ const DashDiv = () => {
 
         <div className="h-auto w-auto sm:h-auto sm:w-48 md:w-64 flex-none bg-cover bg-center rounded rounded-t sm:rounded sm:rounded-l text-center overflow-hidden">
           <div className="flex flex-col py-4 mb-9">
-            <h2 className="mb-2 font-black">Hello Aniket👋</h2>
+            <h2 className="mb-2 font-black">Hello xyzw👋</h2>
             <p className="mb-2 text-gray-dark text-sm">Languages Used</p>
             <span className="font-semibold">C++, C, Javascript, Java</span>
           </div>
@@ -67,7 +67,7 @@ const DashDiv = () => {
               src="./images/user.svg"
               alt="User Avatar"
             />
-            <span className="font-semibold ">boseaniket48</span>
+            <span className="font-semibold ">xyz123</span>
             <div className="flex mt-3">
               <img
                 className="h-6 w-6"
@@ -75,7 +75,7 @@ const DashDiv = () => {
                 alt="User Avatar"
               />
               <span className="mx-0 font-semibold">
-                500 <span className="text-gray-400 font-medium">Rank</span>
+                abc <span className="text-gray-400 font-medium">Rank</span>
               </span>
             </div>
 
@@ -85,7 +85,7 @@ const DashDiv = () => {
                   Current streak
                 </span>
 
-                <span className="justify-center align-center">37/690</span>
+                <span className="justify-center align-center">abc/def</span>
               </div>
               <img
                 className="h-24 w-24"
@@ -98,7 +98,7 @@ const DashDiv = () => {
 
         <div className="h-auto w-auto sm:h-auto sm:w-48 md:w-64 flex-none bg-cover bg-center rounded rounded-t sm:rounded sm:rounded-l text-center overflow-hidden">
           <div className="flex flex-col py-4 mb-9">
-            <h2 className="mb-2 font-black">Hello Aniket👋</h2>
+            <h2 className="mb-2 font-black">Hello xyzw👋</h2>
             <p className="mb-2 text-gray-dark text-sm">Languages Used</p>
             <span className="font-semibold">C++, C, Javascript, Java</span>
           </div>

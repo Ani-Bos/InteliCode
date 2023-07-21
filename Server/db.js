@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import  mongoose  from "mongoose";
 const url = "mongodb://localhost:27017/mt45";
 
 const mongoconnect = async () => {
@@ -10,4 +10,4 @@ const mongoconnect = async () => {
   }
 };
 
-module.exports = { mongoconnect };
+export default mongoconnect;

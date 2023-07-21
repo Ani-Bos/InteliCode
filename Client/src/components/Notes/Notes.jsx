@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import './Notes.css'
 
 const modules = {
   toolbar: [
@@ -19,18 +20,19 @@ const modules = {
 
 const Notes = () => {
   const [value, setValue] = useState("");
-  console.log(value);
-    return (
-    <div>
+
+  return (
+    <div className="quill-container">
         <span className="text-center">Notes for Intelicode</span>
-        <ReactQuill
-      modules={modules}
-      theme="snow"
-      onChange={setValue}
-      placeholder="The content starts here..."
-    />    
-    </div>
-    
+        <div className="quill-wrapper">
+          <ReactQuill
+            modules={modules}
+            theme="snow"
+            onChange={setValue}
+            placeholder="The content starts here..."
+          />
+        </div>
+      </div>
   );
 };
 

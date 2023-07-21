@@ -1,0 +1,44 @@
+/* .split-container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+} */
+
+.navbar {
+  width: 200px; /* Set the desired width for the navbar */
+  flex-shrink: 0;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+/* 
+.split {
+  flex-grow: 1;
+} 
+
+.gutter.gutter-horizontal {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+  cursor: col-resize;
+} * */
+/* .code-editor {
+  height: 100%;
+  overflow: auto;
+  padding: 10px;
+}
+ */
+
+
+.split {
+    display: flex;
+    flex-direction: row;
+}
+
+.gutter {
+    background-color: #eee;
+    background-repeat: no-repeat;
+    background-position: 50%;
+}
+
+.gutter.gutter-horizontal {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+    cursor: col-resize;
+}

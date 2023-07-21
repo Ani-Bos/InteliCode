@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 const SECRET_KEY = "NOTESAPI ";
 const filter = (req, res, next) => {
   try {
@@ -18,4 +18,4 @@ const filter = (req, res, next) => {
   }
 };
 
-module.exports = filter;
+export default filter;

@@ -19,6 +19,17 @@ const SideNav = ({ host }) => {
     Navigate("/canvas");
   };
 
+  const handlenotes = () => {
+    Navigate("/notes");
+  }
+  
+  const handleEditor = () => {
+    Navigate("/editor");
+  }
+
+  const handleLanding = () => {
+    Navigate("/landing");
+  };
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const getuserinfo = async () => {
@@ -192,7 +203,7 @@ const SideNav = ({ host }) => {
                 </a>
               </li>
               <li>
-                <button
+                <a
                   onClick={handleClick}
                   className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
@@ -207,11 +218,12 @@ const SideNav = ({ host }) => {
                     <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                   </svg>
                   <span className="ml-3">Paint</span>
-                </button>
+                </a>
                 {/* {showCanvas && <CanvasSketchTool height={450} width={750} />} */}
               </li>
               <li>
                 <a
+                  onClick={handlenotes}
                   href="#"
                   className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
@@ -230,7 +242,7 @@ const SideNav = ({ host }) => {
               </li>
               <li>
                 <a
-                  href="#"
+                  onClick={handleEditor}
                   className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <svg
@@ -243,12 +255,12 @@ const SideNav = ({ host }) => {
                     <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                     <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                   </svg>
-                  <span className="ml-3">Dashboard</span>
+                  <span className="ml-3">Editor</span>
                 </a>
               </li>
               <li>
                 <a
-                  href="#"
+                  onClick={handleLanding}
                   className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <svg
@@ -261,7 +273,7 @@ const SideNav = ({ host }) => {
                     <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                     <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                   </svg>
-                  <span className="ml-3">Dashboard</span>
+                  <span className="ml-3">Landing</span>
                 </a>
               </li>
             </ul>

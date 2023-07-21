@@ -1,12 +1,26 @@
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-const { mongoconnect } = require("./db");
-const filter = require("./Middleware/Middleware");
+// const express = require("express");
+// const cors = require("cors");
+// const path = require("path");
+// const { mongoconnect } = require("./db");
+// const filter = require("./Middleware/Middleware");
+// const app = express();
+// const axios = require("axios");
+// app.use(cors());
+// const port = process.env.PORT || 5000;
+
+import express from "express";
+import cors from "cors";
+import  path  from "path";
+import  mongoconnect  from "./db.js";
+import filter from "./Middleware/Middleware.js";
+import question from "./Routes/Questions.js";
+import user from "./Routes/auth.js"
+const port = process.env.PORT || 5000;
 const app = express();
-const axios = require("axios");
-app.use(cors());
-const port = process.env.PORT ||  5000;
+import axios from "axios";
+ app.use(cors());
+app.use(express.json());
+
 //endpoints setting
 
 // const mongoose = require("mongoose");
@@ -24,7 +38,8 @@ app.use(express.json());
 
 // app.use("/users", userRouter);
 // app.use("/visitor", visitor);
-app.use("/api/auth", require("./Routes/auth"));
+app.use("/api/question", question);
+app.use("/api/auth", user);
 app.get("/", (req, res) => {
   res.send("hello");
 });
@@ -42,4 +57,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => console.log(`Server started on port ${port}`));
 
 // export 'app'
-module.exports = app;
