@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Route, Routes, BrowserRouter  } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, BrowserRouter } from "react-router-dom";
+import { useState,useEffect } from "react";
 import Home from "./pages/Home/Home";
 import Navbar from "./components/Navbar/Navbar";
 import Hero from "./components/Hero/Hero";
@@ -17,11 +18,30 @@ import Editor from "./components/Editor/Editor";
 import Landing from "./components/Editor/Landing";
 import Playground from "./components/Playground/Playground";
 import Workspace from "./components/Workspace/Workspace";
+import HomePage from "./components/Video/HomePage";
+import CallPage from "./components/Video/CallPage";
+import NoMatch from "./components/Video/NoMatch";
 function App() {
+   const [hash, setHash] = useState("");
+
+   useEffect(() => {
+     // Extract the hash value from the URL
+     const currentHash = window.location.hash;
+     setHash(currentHash);
+   }, []);
   return (
     // <Workspace/>
     <Router>
       <Routes>
+        {/* <Route exact path="/:id">
+          <CallPage />
+        </Route>
+        <Route exact path="/">
+          <HomePage />
+        </Route>
+        <Route path="*">
+          <NoMatch />
+        </Route> */}
         <Route exact path="/" element={<Home />} />
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/dashboard" element={<Dashboard />} />
@@ -31,6 +51,10 @@ function App() {
         <Route exact path="/notes" element={<Notes />}></Route>
         <Route exact path="/editor" element={<Workspace />}></Route>
         <Route exact path="/landing" element={<Landing />}></Route>
+        <Route exact path="/callPage/:id" element={<CallPage />}></Route>
+        <Route exact path="/Homepage" element={<HomePage />}></Route>
+        <Route exact path="/nomatch" element={<NoMatch />}></Route>
+        <Route path={`/:id${hash}`} element={<CallPage />} />
       </Routes>
     </Router>
   );
