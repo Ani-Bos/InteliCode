@@ -5,6 +5,7 @@ export const postRequest = async (url, payload = {}) => {
     .post(url, payload)
     .then((resp) => resp.data)
     .catch((err) => ({ error: err.response.data }));
+  console.log("stream data : " )
   return data;
 };
 

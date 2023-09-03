@@ -1,5 +1,6 @@
 // const io = require("./index").io;
-
+// import { Server } from "socket.io";
+import { io } from "./index.js";
 // module.exports = (socket) => {
 //   try {
 //     console.log("Connected");
@@ -23,16 +24,16 @@
 // };
 
 // export default socketManager;
-
+// import { io } from "./index.js";
 const socketManager = (socket) => {
   try {
-    console.log("Connected");
+    console.log("socket manager Connected");
     socket.on("code", (data, callback) => {
       // Broadcast the "code" event to all connected clients
-      io.emit("code", data); // Use io.emit instead of socket.broadcast.emit
+       io.emit("code", data); // Use io.emit instead of socket.broadcast.emit
     });
-  } catch (ex) {
-    console.log(ex.message);
+  } catch (error) {
+    console.log(error);
   }
 };
 

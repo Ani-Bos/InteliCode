@@ -10,8 +10,7 @@ import mongoconnect from "./db.js";
 import filter from "./Middleware/Middleware.js";
 import question from "./Routes/Questions.js";
 import Meet from "./Routes/Meet.js";
-import user from "./Routes/auth.js";
- 
+import user from "./Routes/auth.js"; 
 import socketManager from "./SocketManager.js";
 import { createServer } from "http"; // Use createServer from http module
 import { Server } from "socket.io"; // Use Server from socket.io module
@@ -27,13 +26,13 @@ app.use([
   Meet,
   bodyParser.urlencoded({ extended: false }),
 ]);
-const io = new Server(server, {
+app.use(express.json());
+export const io = new Server(server, {
   cors: {
     origin: "*",
   },
 });
-
-io.on("connection", (socket) => socketManager(socket, io));
+io.on("connection", socketManager);
 
 // if (process.env.NODE_ENV === "production") {
 //   // Serve any static files
@@ -62,7 +61,6 @@ io.on("connection", (socket) => socketManager(socket, io));
 
 // const mongoose = require("mongoose");
 mongoconnect();
-app.use(express.json());
 
 //use of middlewares
 

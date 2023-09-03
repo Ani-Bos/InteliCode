@@ -22,13 +22,13 @@ import HomePage from "./components/Video/HomePage";
 import CallPage from "./components/Video/CallPage";
 import NoMatch from "./components/Video/NoMatch";
 function App() {
-   const [hash, setHash] = useState("");
+  //  const [hash, setHash] = useState("");
 
-   useEffect(() => {
-     // Extract the hash value from the URL
-     const currentHash = window.location.hash;
-     setHash(currentHash);
-   }, []);
+  //  useEffect(() => {
+  //    // Extract the hash value from the URL
+  //    const currentHash = window.location.hash;
+  //    setHash(currentHash);
+  //  }, []);
   return (
     // <Workspace/>
     <Router>
@@ -54,7 +54,7 @@ function App() {
         <Route exact path="/callPage/:id" element={<CallPage />}></Route>
         <Route exact path="/Homepage" element={<HomePage />}></Route>
         <Route exact path="/nomatch" element={<NoMatch />}></Route>
-        <Route path={`/:id${hash}`} element={<CallPage />} />
+        <Route path="/:id" element={<CallPage />} />
       </Routes>
     </Router>
   );

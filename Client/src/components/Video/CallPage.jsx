@@ -1,11 +1,7 @@
 import { useEffect, useReducer, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getRequest, postRequest } from "../../Utils/ApiRequest";
-import {
-  BASE_URL,
-  GET_CALL_ID,
-  SAVE_CALL_ID,
-} from "../../Utils/ApiEndPoints"
+import { BASE_URL, GET_CALL_ID, SAVE_CALL_ID } from "../../Utils/ApiEndPoints";
 import { io } from "socket.io-client";
 import Peer from "simple-peer";
 import Messenger from "./Messenger";
@@ -16,19 +12,18 @@ import CallPageFooter from "./CallPageFooter";
 import CallPageHeader from "./CallPageHeader";
 
 let peer = null;
-let socket;
+const socket = io("http://localhost:5000");
 const initialState = [];
 
-
 const CallPage = () => {
-   socket = io.connect("http://localhost:5000");
+  // socket = io.connect();
   const navigate = useNavigate();
   let { id } = useParams();
-  console.log(id)
+  console.log(id);
   //user is  admin or not
   console.log(window.location.hash);
   const isAdmin = window.location.hash === "#init" ? true : false;
-  //url without hash 
+  //url without hash
   const url = `${window.location.origin}${window.location.pathname}`;
   let alertTimeout = null;
 
@@ -60,24 +55,19 @@ const CallPage = () => {
     socket.on("code", (data) => {
       if (data.url === url) {
         peer.signal(data.code);
-      }
-    });
-    socket.on("code", (data) => {
-      if (data.url === url) {
-        peer.signal(data.code);
+        console.log("finally socket is on")
       }
     });
     // Clean up the socket connection when the component unmounts
-    return () => {
-      socket.disconnect();
-    };
+    // return () => {
+    //   socket.disconnect();
+    // };
   }, []);
 
-
-//if user is not admin
+  //if user is not admin
   const getRecieverCode = async () => {
     const response = await getRequest(`${BASE_URL}${GET_CALL_ID}/${id}`);
-    console.log(response)
+    console.log(response);
     if (response.code) {
       peer.signal(response.code);
     }
@@ -91,38 +81,64 @@ const CallPage = () => {
       })
       .then((stream) => {
         setStreamObj(stream);
-            console.log(stream)
+        console.log(stream);
         peer = new Peer({
           initiator: isAdmin,
           trickle: false,
           stream: stream,
         });
-        console.log(peer)
+        console.log("peer : " + peer);
 
         if (!isAdmin) {
           getRecieverCode();
         }
+        peer.on("stream", (stream) => {
+          // got remote video stream, now let's show it in a video tag
+          let video = document.querySelector("#webrtcvideo");
+          console.log("video : " + video);
+          console.log(stream);
+          if ("srcObject" in video) {
+            video.srcObject = stream;
+          } else {
+            video.src = window.URL.createObjectURL(stream); // for older browsers
+          }
 
+          video.play();
+        });
+        // Only one event listener for "stream" is needed
+        // peer.on("stream", (remoteStream) => {
+        //   // got remote video stream, now let's show it in a video tag
+        //   let video = document.querySelector("#webrtcvideo");
+        //   console.log("video: " + video);
+        //   console.log(remoteStream);
+        //   // Use srcObject property if supported
+        //   if ("srcObject" in video) {
+        //     video.srcObject = remoteStream;
+        //   } else {
+        //     // Fallback for older browsers (not recommended for modern browsers)
+        //     video.src = window.URL.createObjectURL(remoteStream);
+        //   }
+        //   video.play();
+        // });
         peer.on("signal", async (data) => {
           if (isAdmin) {
             let payload = {
               id,
               signalData: data,
             };
-            console.log("anikey")
-            let res = await postRequest(`${BASE_URL}${SAVE_CALL_ID}`, payload);
-            console.log(res)
+            console.log("anikey");
+            await postRequest(`${BASE_URL}${SAVE_CALL_ID}`, payload);
+            // console.log("hi"+ res)
           } else {
             socket.emit("code", { code: data, url }, (cbData) => {
               console.log("code sent");
             });
           }
         });
-
         peer.on("connect", () => {
           // wait for 'connect' event before using the data channel
+          console.log("connected");
         });
-
         peer.on("data", (data) => {
           clearTimeout(alertTimeout);
           messageListReducer({
@@ -133,7 +149,6 @@ const CallPage = () => {
               time: Date.now(),
             },
           });
-
           setMessageAlert({
             alert: true,
             isPopup: true,
@@ -151,22 +166,99 @@ const CallPage = () => {
             });
           }, 10000);
         });
-
         peer.on("stream", (stream) => {
           // got remote video stream, now let's show it in a video tag
-          let video = document.querySelector("video");
-console.log(stream)
-          // if ("srcObject" in video) {
+          let video = document.querySelector("#webrtcvideo");
+          console.log("video : " + video);
+          console.log(stream);
+          if ("srcObject" in video) {
             video.srcObject = stream;
-          // } else {
-          //   video.src = window.URL.createObjectURL(stream); // for older browsers
-          // }
+          } else {
+            video.src = window.URL.createObjectURL(stream); // for older browsers
+          }
 
           video.play();
         });
       })
       .catch(() => {});
   };
+  // const initWebRTC = () => {
+  //   navigator.mediaDevices
+  //     .getUserMedia({
+  //       video: true,
+  //       audio: true,
+  //     })
+  //     .then((stream) => {
+  //       setStreamObj(stream);
+
+  //       peer = new Peer({
+  //         initiator: isAdmin,
+  //         trickle: false,
+  //         stream: stream,
+  //       });
+
+  //       if (!isAdmin) {
+  //         getRecieverCode();
+  //       }
+
+  //       peer.on("signal", async (data) => {
+  //         if (isAdmin) {
+  //           let payload = {
+  //             id,
+  //             signalData: data,
+  //           };
+  //           await postRequest(`${BASE_URL}${SAVE_CALL_ID}`, payload);
+  //           // console.log("hi" + res);
+  //         } else {
+  //           socket.emit("code", { code: data, url }, (cbData) => {
+  //             console.log("code sent");
+  //           });
+  //         }
+  //       });
+
+  //       peer.on("connect", () => {
+  //         // wait for 'connect' event before using the data channel
+  //       });
+
+  //       peer.on("data", (data) => {
+  //         clearTimeout(alertTimeout);
+  //         messageListReducer({
+  //           type: "addMessage",
+  //           payload: {
+  //             user: "other",
+  //             msg: data.toString(),
+  //             time: Date.now(),
+  //           },
+  //         });
+  //         setMessageAlert({
+  //           alert: true,
+  //           isPopup: true,
+  //           payload: {
+  //             user: "other",
+  //             msg: data.toString(),
+  //           },
+  //         });
+  //         alertTimeout = setTimeout(() => {
+  //           setMessageAlert({
+  //             ...messageAlert,
+  //             isPopup: false,
+  //             payload: {},
+  //           });
+  //         }, 10000);
+  //       });
+  //       peer.on("stream", (stream) => {
+  //         // got remote video stream, now let's show it in a video tag
+  //         let video = document.querySelector("#webrtcvideo");
+  //         if ("srcObject" in video) {
+  //           video.srcObject = stream;
+  //         } else {
+  //           video.src = window.URL.createObjectURL(stream); // for older browsers
+  //         }
+  //         video.play();
+  //       });
+  //     })
+  //     .catch(() => {});
+  // };
 
   const sendMsg = (msg) => {
     peer.send(msg);
@@ -220,18 +312,18 @@ console.log(stream)
 
   const disconnectCall = () => {
     peer.destroy();
-    navigate('/')
+    navigate("/");
     window.location.reload();
   };
 
   return (
     <div className="callpage-container">
       <video
-        className="video-container h-screen w-full object-cover absolute z-[-1]"
+        className="h-screen w-full object-cover absolute z-[-1]"
         src=""
-        controls
+        autoPlay=''
+        id="webrtcvideo"
       ></video>
-
       <CallPageHeader
         isMessenger={isMessenger}
         setIsMessenger={setIsMessenger}
@@ -246,7 +338,6 @@ console.log(stream)
         toggleAudio={toggleAudio}
         disconnectCall={disconnectCall}
       />
-
       {isAdmin && meetInfoPopup && (
         <MeetingInfo setMeetInfoPopup={setMeetInfoPopup} url={url} />
       )}
