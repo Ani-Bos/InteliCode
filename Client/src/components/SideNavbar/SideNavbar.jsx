@@ -32,7 +32,7 @@ const SideNav = ({ host }) => {
   };
 
   const handleMeet = () => {
-    Navigate("/Homepage");
+    Navigate("/video");
   }
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

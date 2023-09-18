@@ -18,9 +18,8 @@ import Editor from "./components/Editor/Editor";
 import Landing from "./components/Editor/Landing";
 import Playground from "./components/Playground/Playground";
 import Workspace from "./components/Workspace/Workspace";
-import HomePage from "./components/Video/HomePage";
-import CallPage from "./components/Video/CallPage";
-import NoMatch from "./components/Video/NoMatch";
+import VideoHome from "./components/Video/VideoHome";
+import Video from "./components/Video/Video.jsx"
 function App() {
   //  const [hash, setHash] = useState("");
 
@@ -51,10 +50,8 @@ function App() {
         <Route exact path="/notes" element={<Notes />}></Route>
         <Route exact path="/editor" element={<Workspace />}></Route>
         <Route exact path="/landing" element={<Landing />}></Route>
-        <Route exact path="/callPage/:id" element={<CallPage />}></Route>
-        <Route exact path="/Homepage" element={<HomePage />}></Route>
-        <Route exact path="/nomatch" element={<NoMatch />}></Route>
-        <Route path="/:id" element={<CallPage />} />
+        <Route exact path="/video" element={<VideoHome />}></Route>
+        <Route exact path="/:url" element={<Video />}></Route>
       </Routes>
     </Router>
   );

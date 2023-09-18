@@ -1,0 +1,17 @@
+html, body {
+  	height: 100%;
+}
+body {
+	margin: 0;
+	text-align: center;
+	
+}
+
+.container2 {
+	padding-top: 30px;
+	margin: auto;
+	height: 100vh;
+	
+	text-align: center;
+	background-color: #0c111f;
+}
