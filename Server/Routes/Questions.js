@@ -3,16 +3,20 @@ import  Question  from "../Model/Question.js";
 const router = express.Router();
 
 router.post("/addQuestion", async (req, res) => {
-  const { questionName, question, testcase, result, difficulty, category } =
+  console.log("went into adding new question")
+  const { title, difficulty, content,testcase, constraint } =
     req.body;
+  console.log("title"+title);
+  console.log("difficulty" + difficulty);
+  console.log("content"+content);
+  console.log("constraint"+constraint);
   try {
     const obj = {
-      questionName,
-      question,
-      testcase,
-      result,
+      title,
       difficulty,
-      category,
+      content,
+      testcase,
+      constraint,
     };
     await Question.create(obj);
     res.json({ status: "question added", obj });
@@ -34,12 +38,12 @@ router.get("/getallQuestions", async (req, res) => {
 
 router.put("/updateQuestion/:id", async (req, res) => {
   const { id } = req.params;
-  const { questionName, question, testcase, result, difficulty, category } =
+  const { questionName, question, testcase,difficulty, category } =
     req.body;
   try {
     const upquestion = await Question.findByIdAndUpdate(
       id,
-      { questionName, question, testcase, result, difficulty, category },
+      { questionName, question, testcase,  difficulty, category },
       { new: true }
     );
     res.json({ status: "updated question", updated: upquestion });

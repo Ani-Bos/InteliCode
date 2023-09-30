@@ -14,13 +14,16 @@ import ScreenShareIcon from "@mui/icons-material/ScreenShare";
 import StopScreenShareIcon from "@mui/icons-material/StopScreenShare";
 import CallEndIcon from "@mui/icons-material/CallEnd";
 import ChatIcon from "@mui/icons-material/Chat";
-
 import { message } from "antd";
 // import "antd/dist/antd.css";
 
 import { Row } from "reactstrap";
-import Modal from "react-bootstrap/Modal";
-import "bootstrap/dist/css/bootstrap.css";
+
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+// import "bootstrap/dist/css/bootstrap.css";
 import "./Video.css";
 
 const server_url =
@@ -684,15 +687,14 @@ class Video extends Component {
               </Badge>
             </div>
 
-            <Modal
-              show={this.state.showModal}
-              onHide={this.closeChat}
+             <Dialog
+              open={this.state.showModal}
+              onClose={this.closeChat}
               style={{ zIndex: "999999" }}
+              maxWidth="100px"
             >
-              <Modal.Header closeButton>
-                <Modal.Title>Chat Room</Modal.Title>
-              </Modal.Header>
-              <Modal.Body
+              <DialogTitle>Chat Room</DialogTitle>
+              <DialogContent
                 style={{
                   overflow: "auto",
                   overflowY: "auto",
@@ -711,8 +713,8 @@ class Video extends Component {
                 ) : (
                   <p>No message yet</p>
                 )}
-              </Modal.Body>
-              <Modal.Footer className="div-send-msg">
+              </DialogContent>
+              <DialogActions className="div-send-msg">
                 <Input
                   placeholder="Message"
                   value={this.state.message}
@@ -725,8 +727,8 @@ class Video extends Component {
                 >
                   Send
                 </Button>
-              </Modal.Footer>
-            </Modal>
+              </DialogActions>
+            </Dialog>
 
             <div className="container">
               <div style={{ paddingTop: "20px" }}>
@@ -779,3 +781,4 @@ class Video extends Component {
 }
 
 export default Video;
+

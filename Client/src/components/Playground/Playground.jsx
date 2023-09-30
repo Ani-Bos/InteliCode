@@ -115,32 +115,64 @@ const Playground = ({ testcase, result }) => {
     }
     return -1;
   };
-  const handleSubmit = async () => {
-    setProcessing1(true);
+  // const handleSubmit = async () => {
+  //   setProcessing1(true);
 
-    // const getFile = fruit => {
-    //     return suboutput[fruit];
-    //     };
-    setStatuscode(false);
-    setIsSubmitClick(true);
-    const arr = await testcase.map(async (e, i) => {
-      const res = await submitbuffer(e);
-      return res;
-    });
+  
+  //   setStatuscode(false);
+  //   setIsSubmitClick(true);
+  //   const arr = await testcase.map(async (e, i) => {
+  //     const res = await submitbuffer(e);
+  //     return res;
+  //   });
 
-    // testcase.map(async(e,i)=>{
-    //   // localStorage.setItem("jjj",e);
-    // submitbuffer(e);
+  //   // testcase.map(async(e,i)=>{
+  //   //   // localStorage.setItem("jjj",e);
+  //   // submitbuffer(e);
 
-    // })
+  //   // })
 
-    const arr1 = await Promise.all(arr);
-    // console.log(arr1);
-    // console.log(testcase,result)
-    setsuboutput(arr1);
+  //   const arr1 = await Promise.all(arr);
+  //   // console.log(arr1);
+  //   // console.log(testcase,result)
+  //   setsuboutput(arr1);
 
-    setWrs(true);
-  };
+  //   setWrs(true);
+  // };
+    const handleSubmit = async () => {
+      setProcessing1(true);
+      setStatuscode(false);
+      setIsSubmitClick(true);
+
+      const arr = await testcase.map(async (test, i) => {
+        const [inputPart, expectedOutputPart] = test; // Destructure the input and expected output parts
+        const res = await submitbuffer(inputPart);
+        return [res, expectedOutputPart]; // Return both the result and the expected output
+      });
+
+      const arr1 = await Promise.all(arr);
+      setsuboutput(arr1);
+      setWrs(true);
+
+      // Check if all test cases are correct
+      const isAllTestCasesCorrect = arr1.every(([output, expectedOutput]) => {
+        const trimmedOutput = output.trim(); // Remove leading/trailing spaces
+
+        // Compare the trimmed output with the expected result
+        return trimmedOutput === expectedOutput;
+      });
+
+      if (isAllTestCasesCorrect) {
+        console.log(
+          "All test cases are correct. Mark the submission as accepted."
+        );
+      } else {
+       
+        console.log(
+          "Not all test cases are correct. Mark the submission as incorrect."
+        );
+      }
+    };
   const handleCompile = () => {
     setProcessing(true);
     setIsSubmitClick(false);
@@ -321,7 +353,121 @@ const Playground = ({ testcase, result }) => {
         sizes={[60, 40]}
         minSize={60}
       >
-        <div className="w-full overflow-auto">
+        <div>
+          <div className="flex flex-row">
+            <div className="px-4 py-2 ">
+              <LanguagesDropdown onSelectChange={onSelectChange} />
+            </div>
+            <div className="px-4 py-2">
+              <ThemeDropdown
+                handleThemeChange={handleThemeChange}
+                theme={theme}
+              />
+            </div>
+          </div>
+          <div className=" space-x-4 items-start px-4 py-4">
+            <div className="flex flex-col w-full h-full justify-start items-end">
+              <CodeEditorWindow
+                code={code}
+                onChange={onChange}
+                language={language?.value}
+                theme={theme?.value}
+              />
+            </div>
+            <div className="my-6">
+              <button
+                onClick={() => {
+                  setConsol(!consol);
+                }}
+                className="mb-8 px-4 py-2 font-medium items-center transition-all focus:outline-none inline-flex text-sm text-white bg-dark-green-s hover:bg-green-3 rounded-lg"
+              >
+                Console
+              </button>
+            </div>
+            {consol && (
+              <div className="right-container flex flex-shrink-0 flex-col">
+                <OutputWindow
+                  outputDetails={outputDetails}
+                  isSubmitClick={isSubmitClick}
+                />
+                <div className="flex flex-col items-end">
+                  <CustomInput
+                    customInput={customInput}
+                    setCustomInput={setCustomInput}
+                  />
+                  <div className="space-x-2">
+                    <button
+                      onClick={handleCompile}
+                      disabled={!code}
+                      className={classnames(
+                        "mt-4 border-2 border-black z-10 rounded-lg  px-4 py-2 hover:shadow transition duration-200 bg-white flex-shrink-0",
+                        !code ? "opacity-50" : ""
+                      )}
+                    >
+                      {processing ? "Processing..." : "Compile and Execute"}
+                    </button>
+                    <button
+                      onClick={handleSubmit}
+                      disabled={!code}
+                      className={classnames(
+                        "mb-8 px-4 py-2 font-medium items-center transition-all focus:outline-none inline-flex text-sm text-white bg-dark-green-s hover:bg-green-3 rounded-lg",
+                        !code ? "opacity-50" : ""
+                      )}
+                    >
+                      {processing1 ? "Processing..." : "Submit"}
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  {statuscode && <div>request limit exceeded</div>}
+                  {!statuscode && wrs && (
+                    <>
+                      <div>Result</div>
+                    </>
+                  )}
+                  {!statuscode &&
+                    suboutput.map((e, i) => {
+                      let index = 0;
+                      for (let i = e?.length - 1; i >= 0; i--) {
+                        if (e[i] !== "\n" && e[i] !== " ") {
+                          index = i;
+                          break;
+                        }
+                      }
+                      let mod = e?.slice(0, index + 1);
+                      console.log(suboutput, result, mod);
+                      if (i === 3)
+                        //only three testcase visible
+                        return;
+                      if (mod !== result[i]) {
+                        return (
+                          <div className="bg-red-600 py-1 px-2 rounded-md">
+                            {" "}
+                            <div>Testcase {i} wrong</div>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div className="my-1">
+                          {" "}
+                          <div className="bg-green-600 py-1 px-2 rounded-md">
+                            Testcase {i} correct
+                          </div>{" "}
+                        </div>
+                      );
+                    })}
+                  <div></div>
+                </div>
+
+                {outputDetails && (
+                  <OutputDetails outputDetails={outputDetails} />
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+        {/* <div className="w-full overflow-auto">
           <div className="flex flex-row">
             <div className="px-4 py-2 ">
               <LanguagesDropdown onSelectChange={onSelectChange} />
@@ -341,9 +487,9 @@ const Playground = ({ testcase, result }) => {
               theme={theme?.value}
             />
           </div>
-        </div>
-        <div className="w-full px-5 overflow-auto">
-          {/* testcase heading */}
+        </div> */}
+        {/* testcase heading */}
+        {/* <div className="w-full px-5 overflow-auto">
           <div className="flex h-10 items-center space-x-6">
             <div className="relative flex h-full flex-col justify-center cursor-pointer">
               <div className="text-sm font-medium leading-5 text-white">
@@ -351,43 +497,41 @@ const Playground = ({ testcase, result }) => {
               </div>
               <hr className="absolute bottom-0 h-0.5 w-full rounded-full border-none bg-white" />
             </div>
-          </div>
+          </div> */}
 
-          <div className="flex">
+        {/* <div className="flex">
             (
             <div
               className="mr-2 items-start mt-2 "
               // key={example.id}
               // onClick={() => setActiveTestCaseId(index)}
-            >
-              <div className="flex flex-wrap items-center gap-y-4">
+            > */}
+        {/* <div className="flex flex-wrap items-center gap-y-4">
                 <div
                   className={`font-medium items-center transition-all focus:outline-none inline-flex bg-dark-fill-3 hover:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap
 									
 									`}
                 >
                   {/* Case {index + 1} */}
-                </div>
-              </div>
-            </div>
+        {/* </div>
+              </div> */}
+        {/* </div>
             )
-          </div>
+          </div> */}
 
-          <div className="font-semibold my-4">
+        {/* <div className="font-semibold my-4">
             <p className="text-sm font-medium mt-4 text-white">Input:</p>
-            <div className="w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2">
-              {/* {problem.examples[activeTestCaseId].inputText} */}
-            </div>
-            <p className="text-sm font-medium mt-4 text-white">Output:</p>
-            <div className="w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2">
-              {/* {problem.examples[activeTestCaseId].outputText} */}
-            </div>
-          </div>
-        </div>
+            <div className="w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2"> */}
+        {/* {problem.examples[activeTestCaseId].inputText} */}
+        {/* </div> */}
+        {/* <p className="text-sm font-medium mt-4 text-white">Output:</p>
+            <div className="w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2"> */}
+        {/* {problem.examples[activeTestCaseId].outputText} */}
+        {/* </div>
+          </div> */}
+        {/* </div> */}
       </Split>
-      <div className="mb-16">
-        <EditorFooter />
-      </div>
+      <div className="mb-16"></div>
     </div>
   );
 };

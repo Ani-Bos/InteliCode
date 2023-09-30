@@ -2,11 +2,15 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 const schema = new Schema(
   {
-    questionName: {
+    title: {
       type: String,
       required: true,
     },
-    question: {
+    difficulty: {
+      type: String,
+      required: true,
+    },
+    content: {
       type: String,
       required: true,
     },
@@ -14,15 +18,7 @@ const schema = new Schema(
       type: Array,
       required: true,
     },
-    result: {
-      type: Array,
-      required: true,
-    },
-    difficulty: {
-      type: String,
-      required: true,
-    },
-    category: {
+    constraint: {
       type: String,
       required: true,
     },
