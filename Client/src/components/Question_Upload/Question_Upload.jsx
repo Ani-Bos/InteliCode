@@ -10,11 +10,23 @@ const Question_Upload = () => {
   const [constraintValue, setConstraintValue] = useState(""); 
    const [uploadStatus, setUploadStatus] = useState(null);
   const handleSubmit = async () => {
+    let str = testcaseValue;
+    let arr = str.split('&')
+    let test = arr.map((e) => {
+      let obj = {}
+      let input = e.split(';')[0];
+      let output = e.split(';')[1];
+      obj['input'] = input;
+      obj['output'] = output;
+      return obj
+    })
+    let testcases = await Promise.all(test);
+    console.log(testcases)
       const requestData = {
         title: titleValue,
         difficulty: difficultyValue,
         content: contentValue,
-        testcase: testcaseValue.split("\n"),
+        testcase:testcases ,
         constraint: constraintValue,
       };
       console.log(titleValue)

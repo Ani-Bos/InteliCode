@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.post("/addQuestion", async (req, res) => {
   console.log("went into adding new question")
-  const { title, difficulty, content,testcase, constraint } =
+  const { title, difficulty, content,testcase, result ,constraint } =
     req.body;
   console.log("title"+title);
   console.log("difficulty" + difficulty);

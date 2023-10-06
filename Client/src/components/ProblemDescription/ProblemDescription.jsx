@@ -23,7 +23,7 @@ const ProblemDescription = () => {
   console.log(problem);
   useEffect(() => {
     getProblemdata();
-  }, [id]);
+  }, []);
   return (
     <div className="bg-primary h-screen">
       <div className="flex h-11 w-full items-center pt-2 bg-primary-2 text-white overflow-x-hidden">
@@ -86,7 +86,7 @@ const ProblemDescription = () => {
             {/* Problem Statement(paragraphs) */}
             <div className="text-white text-sm">
               <p className="mt-3">
-                <code>{problem.content}</code>
+               {problem.content}
               </p>
             </div>
 
@@ -94,43 +94,24 @@ const ProblemDescription = () => {
 
             <div className="mt-4">
               {problem.testcase &&
-                problem.testcase.slice(1, 4).map((testCase, index) => {
-                  // Remove square brackets, double quotes, and extra spaces
-                  const cleanedTestCase = testCase
-                    .replace(/\[/g, "")
-                    .replace(/\]/g, "")
-                    .replace(/"/g, "")
-                    .replace(/Input : /g, "") // Remove "Input" and spaces
-                    .replace(/,\s*$/, "") // Remove trailing comma at the end
-                    .trim();
-
-                  // Split the cleanedTestCase to extract input and expected output
-                  const [inputPart, outputPart] =
-                    cleanedTestCase.split("Expected Output: ");
-
-                  // Remove trailing comma from the last element in inputPart
-                  const cleanedInput = inputPart.replace(
-                    /,(\s*\w+\s*=)/g,
-                    " $1"
-                  );
+                problem.testcase.map((testCase, index) => {
 
                   return (
                     <div key={index}>
                       <p className="font-medium text-white">
-                        Test Case {index + 1}:
+                        Test Case {index}:
                       </p>
-                      {cleanedInput && outputPart && (
                         <div className="example-card">
                           <pre className="text-white">
                             <strong className="text-white">Input:</strong>{" "}
-                            {`[${cleanedInput}]`} <br />
+                            {`[${testCase?.input}]`} <br />
                             <strong className="text-white">
                               Expected Output:
                             </strong>{" "}
-                            {`[${outputPart}]`} <br />
+                            {`[${testCase?.output}]`} <br />
                           </pre>
                         </div>
-                      )}
+                     
                     </div>
                   );
                 })}

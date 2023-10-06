@@ -2,13 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Split from "react-split";
-import Landing from "../Editor/Landing";
 import "./Split.css";
-import TopNav from "./TopNav";
-import CodeMirror from "@uiw/react-codemirror";
-import { vscodeDark } from "@uiw/codemirror-theme-vscode";
-import { javascript } from "@codemirror/lang-javascript";
-import EditorFooter from "./EditorFooter";
 import CodeEditorWindow from "../Editor/CodeEditorWindow";
 import { languageOptions } from "../../Constant/LanguageOption";
 import { defineTheme } from "../../Lib/DefineTheme";
@@ -21,16 +15,16 @@ import LanguagesDropdown from "../Editor/LanguageDropdown";
 import OutputDetails from "../Editor/OutputDetails";
 import OutputWindow from "../Editor/OutputWindow";
 import ThemeDropdown from "../Editor/ThemeDropdwn";
+import { useParams } from "react-router-dom";
 
 
 const Playground = ({ testcase, result }) => {
-  // const userCode = ""; // Initialize with your desired initial code value
-  // const settings = {
-  //   fontSize: 14, // Adjust the font size according to your preference
-  // };
   const [suboutput, setsuboutput] = useState([]);
   const [consol, setConsol] = useState(false);
   const [code, setCode] = useState("");
+
+  const [testStatus, setTestStatus] = useState([]);
+const [helper, setHelper] = useState(false)
   const [customInput, setCustomInput] = useState("");
   const [outputDetails, setOutputDetails] = useState(null);
   const [processing, setProcessing] = useState(null);
@@ -43,18 +37,27 @@ const Playground = ({ testcase, result }) => {
   const [statuscode, setStatuscode] = useState(false);
   const ctrlPress = useKeyPress("Control");
   const [wrs, setWrs] = useState(false);
+  const [problem, setProblem] = useState({});
+  const { id } = useParams();
+  const getProblemdata = async () => {
+    try {
+      const url = `http://localhost:5000/api/question/getQuestion/${id}`;
+      const resp = await axios.get(url);
+      const question = resp.data;
+      setProblem(question);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const onSelectChange = (sl) => {
     console.log("selected Option...", sl);
     setLanguage(sl);
   };
 
   useEffect(() => {
-    if (enterPress && ctrlPress) {
-      console.log("enterPress", enterPress);
-      console.log("ctrlPress", ctrlPress);
-      handleCompile();
-    }
-  }, [ctrlPress, enterPress]);
+    getProblemdata();
+  }, []);
+  
   const onChange = (action, data) => {
     switch (action) {
       case "code": {
@@ -68,57 +71,51 @@ const Playground = ({ testcase, result }) => {
   };
   const urlL = "https://judge0-ce.p.rapidapi.com/submissions";
   const jhost = "judge0-ce.p.rapidapi.com";
+  // const jkey = "60972d1385msh9924ca6b34704eep10cf7fjsn847f8c7b32b0";
+  // const jkey = "b5e72c53c1mshbe98fcc00788cbap183624jsn24b3a07843ad";
   const jkey = "fdf905e00amsh129dca5d5ef50b9p1bf6b5jsnec112dfb068c";
+// async function someAsyncFunction(token) {
+//   return new Promise((resolve, reject) => {
+//     checkStatus(token, resolve, reject);
+//   });
 
-  const submitbuffer = async (e) => {
-    console.log(e);
-    const formData = {
-      language_id: language.id,
-      // encode source code in base64
-      source_code: btoa(code),
-      stdin: btoa(e),
-    };
-    const options = {
-      method: "POST",
-      url: urlL,
-      params: { base64_encoded: "true", fields: "*" },
-      headers: {
-        "content-type": "application/json",
-        "Content-Type": "application/json",
-        "X-RapidAPI-Host": jhost,
-        "X-RapidAPI-Key": jkey,
-      },
-      data: formData,
-    };
 
+  const submitbuffer = async (input, expectedOutput, i) => {
     try {
+      const formData = {
+        language_id: language.id,
+        source_code: btoa(code),
+        stdin: btoa(input),
+        expected_output: btoa(expectedOutput),
+      };
+
+      const options = {
+        method: "POST",
+        url: urlL,
+        params: { base64_encoded: "true", fields: "*" },
+        headers: {
+          "content-type": "application/json",
+          "Content-Type": "application/json",
+          "X-RapidAPI-Host": jhost,
+          "X-RapidAPI-Key": jkey,
+        },
+        data: formData,
+      };
+
       const response = await axios.request(options);
-      console.log("res.data", response.data);
       const token = response.data.token;
-      const res = await checkStatus(token);
-      return res;
+
+      const resok = await checkStatus(token, i);
+      return resok;
     } catch (err) {
-      let error = err.response ? err.response.data : err;
-      // get error status
-      let status = err.response.status;
-      console.log("status", status);
-      if (status === 429) {
-        console.log("too many requests", status);
-        setStatuscode(true);
-        // showErrorToast(
-        //   `Quota of 100 requests exceeded for the Day! Please read the blog on freeCodeCamp to learn how to setup your own RAPID API Judge0!`,
-        //   10000
-        // );
-      }
-      setProcessing1(false);
-      console.log("catch block...", error);
+      // Handle any errors here
+      console.error("Error in submitbuffer:", err);
+      throw err; // Rethrow the error to be handled in the calling function
     }
-    return -1;
   };
   // const handleSubmit = async () => {
   //   setProcessing1(true);
 
-  
   //   setStatuscode(false);
   //   setIsSubmitClick(true);
   //   const arr = await testcase.map(async (e, i) => {
@@ -139,43 +136,47 @@ const Playground = ({ testcase, result }) => {
 
   //   setWrs(true);
   // };
-    const handleSubmit = async () => {
-      setProcessing1(true);
-      setStatuscode(false);
-      setIsSubmitClick(true);
+const handleSubmit = async () => {
+  try {
+    setProcessing1(true);
+    setStatuscode(false);
+    setIsSubmitClick(true);
 
-      const arr = await testcase.map(async (test, i) => {
-        const [inputPart, expectedOutputPart] = test; // Destructure the input and expected output parts
-        const res = await submitbuffer(inputPart);
-        return [res, expectedOutputPart]; // Return both the result and the expected output
-      });
+    if (!problem || !problem.testcase) {
+      console.error("Problem or testcase is not defined.");
+      return;
+    }
 
-      const arr1 = await Promise.all(arr);
-      setsuboutput(arr1);
-      setWrs(true);
+    const arr = problem.testcase.map(async (test, i) => {
+      const { input, output } = test;
+      const res = await submitbuffer(input, output, i);
+      return res;
+    });
 
-      // Check if all test cases are correct
-      const isAllTestCasesCorrect = arr1.every(([output, expectedOutput]) => {
-        const trimmedOutput = output.trim(); // Remove leading/trailing spaces
+    const arr1 = await Promise.all(arr);
+    console.log(arr1);
+setTestStatus(arr1)
+    // Handle the results as needed
+    // ...
 
-        // Compare the trimmed output with the expected result
-        return trimmedOutput === expectedOutput;
-      });
+    // Set the processing flag to false
+    setHelper(!helper)
+    setProcessing1(false);
+  } catch (error) {
+    console.error("Error in handleSubmit:", error);
+    // Handle any errors here
+  }
+};
 
-      if (isAllTestCasesCorrect) {
-        console.log(
-          "All test cases are correct. Mark the submission as accepted."
-        );
-      } else {
-       
-        console.log(
-          "Not all test cases are correct. Mark the submission as incorrect."
-        );
-      }
-    };
+
   const handleCompile = () => {
     setProcessing(true);
     setIsSubmitClick(false);
+
+    if (!problem || !problem.testcase) {
+      console.error("Problem or testcase is not defined.");
+      return;
+    }
     const formData = {
       language_id: language.id,
       // encode source code in base64
@@ -194,7 +195,6 @@ const Playground = ({ testcase, result }) => {
       },
       data: formData,
     };
-
     axios
       .request(options)
       .then(function (response) {
@@ -257,51 +257,50 @@ const Playground = ({ testcase, result }) => {
       showErrorToast();
     }
   };
-  const checkStatus = async (token) => {
-    const options = {
-      method: "GET",
-      url: urlL + "/" + token,
-      params: { base64_encoded: "true", fields: "*" },
-      headers: {
-        "X-RapidAPI-Host": jhost,
-        "X-RapidAPI-Key": jkey,
-      },
-    };
+  const checkStatus = async (token, i) => {
     try {
-      let response = await axios.request(options);
-      let statusId = response.data.status?.id;
-      console.log(statusId);
-      // Processed - we have a result
+      const options = {
+        method: "GET",
+        url: urlL + "/" + token,
+        params: { base64_encoded: "true", fields: "*" },
+        headers: {
+          "X-RapidAPI-Host": jhost,
+          "X-RapidAPI-Key": jkey,
+        },
+      };
+
+      const response = await axios.request(options);
+      const statusId = response.data.status?.id;
+
       if (statusId === 1 || statusId === 2) {
-        // still processing
-        setTimeout(() => {
-          checkStatus(token);
-        }, 2000);
-        return;
+        // If still processing, wait for a while and check again
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        return checkStatus(token, i);
       } else if (statusId === 429) {
-        console.log("too many request");
+        console.log("Too many requests");
         setStatuscode(true);
       } else {
-        setProcessing1(false);
-        // setOutputDetails();
-        setOutputDetails(response.data);
-        // let arr=suboutput;
-        // arr.push(response.data);
-        // setsuboutput(arr);
-        localStorage.setItem("privatetemp", atob(response?.data?.stdout));
-        localStorage.setItem("pr", atob(response?.data?.stdin));
+        // Process the response and return the data
+        // ...
 
-        //  arr.push(atob(response?.data?.stdout));
-        //  setsuboutput(arr);
-        localStorage.setItem(token.toString(), atob(response?.data?.stdout));
-        showSuccessToast(`Compiled Successfully!`);
-        console.log("response.data", response.data);
-        return atob(response?.data?.stdout);
+        // Set the processing flag to false
+        setProcessing1(false);
+
+        let correct = false;
+        if (response.data.status.description === "Accepted") {
+          correct = true;
+        }
+
+     
+
+        return correct;
       }
     } catch (err) {
-      console.log("err", err);
+      // Handle any errors here
+      console.error("Error in checkStatus:", err);
       setProcessing1(false);
       showErrorToast();
+      throw err; // Rethrow the error to be handled in the calling function
     }
   };
 
@@ -342,9 +341,9 @@ const Playground = ({ testcase, result }) => {
       draggable: true,
       progress: undefined,
     });
-  };
-
-  return (
+};
+  
+ return (
     <div className="flex flex-col bg-primary relative overflow-x-hidden">
       {/* <TopNav /> */}
       <Split
@@ -426,20 +425,10 @@ const Playground = ({ testcase, result }) => {
                     </>
                   )}
                   {!statuscode &&
-                    suboutput.map((e, i) => {
-                      let index = 0;
-                      for (let i = e?.length - 1; i >= 0; i--) {
-                        if (e[i] !== "\n" && e[i] !== " ") {
-                          index = i;
-                          break;
-                        }
-                      }
-                      let mod = e?.slice(0, index + 1);
-                      console.log(suboutput, result, mod);
-                      if (i === 3)
-                        //only three testcase visible
-                        return;
-                      if (mod !== result[i]) {
+                   testStatus.map((e,i) => {
+                    
+                
+                      if (!e) {
                         return (
                           <div className="bg-red-600 py-1 px-2 rounded-md">
                             {" "}
@@ -457,7 +446,6 @@ const Playground = ({ testcase, result }) => {
                         </div>
                       );
                     })}
-                  <div></div>
                 </div>
 
                 {outputDetails && (
@@ -467,71 +455,8 @@ const Playground = ({ testcase, result }) => {
             )}
           </div>
         </div>
-        {/* <div className="w-full overflow-auto">
-          <div className="flex flex-row">
-            <div className="px-4 py-2 ">
-              <LanguagesDropdown onSelectChange={onSelectChange} />
-            </div>
-            <div className="px-4 py-2">
-              <ThemeDropdown
-                handleThemeChange={handleThemeChange}
-                theme={theme}
-              />
-            </div>
-          </div>
-          <div className="flex flex-col w-full h-full justify-start items-end">
-            <CodeEditorWindow
-              code={code}
-              onChange={onChange}
-              language={language?.value}
-              theme={theme?.value}
-            />
-          </div>
-        </div> */}
-        {/* testcase heading */}
-        {/* <div className="w-full px-5 overflow-auto">
-          <div className="flex h-10 items-center space-x-6">
-            <div className="relative flex h-full flex-col justify-center cursor-pointer">
-              <div className="text-sm font-medium leading-5 text-white">
-                Testcases
-              </div>
-              <hr className="absolute bottom-0 h-0.5 w-full rounded-full border-none bg-white" />
-            </div>
-          </div> */}
-
-        {/* <div className="flex">
-            (
-            <div
-              className="mr-2 items-start mt-2 "
-              // key={example.id}
-              // onClick={() => setActiveTestCaseId(index)}
-            > */}
-        {/* <div className="flex flex-wrap items-center gap-y-4">
-                <div
-                  className={`font-medium items-center transition-all focus:outline-none inline-flex bg-dark-fill-3 hover:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap
-									
-									`}
-                >
-                  {/* Case {index + 1} */}
-        {/* </div>
-              </div> */}
-        {/* </div>
-            )
-          </div> */}
-
-        {/* <div className="font-semibold my-4">
-            <p className="text-sm font-medium mt-4 text-white">Input:</p>
-            <div className="w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2"> */}
-        {/* {problem.examples[activeTestCaseId].inputText} */}
-        {/* </div> */}
-        {/* <p className="text-sm font-medium mt-4 text-white">Output:</p>
-            <div className="w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2"> */}
-        {/* {problem.examples[activeTestCaseId].outputText} */}
-        {/* </div>
-          </div> */}
-        {/* </div> */}
       </Split>
-      <div className="mb-16"></div>
+      <div className="mb-24"></div>
     </div>
   );
 };
