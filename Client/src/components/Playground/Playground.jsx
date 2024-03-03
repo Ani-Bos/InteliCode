@@ -7,7 +7,7 @@ import CodeEditorWindow from "../Editor/CodeEditorWindow";
 import { languageOptions } from "../../Constant/LanguageOption";
 import { defineTheme } from "../../Lib/DefineTheme";
 import { classnames } from "../../Utils/General";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useKeyPress from "../../Hooks/UseKeyPress";
 import CustomInput from "../Editor/CustomInput";
@@ -15,16 +15,19 @@ import LanguagesDropdown from "../Editor/LanguageDropdown";
 import OutputDetails from "../Editor/OutputDetails";
 import OutputWindow from "../Editor/OutputWindow";
 import ThemeDropdown from "../Editor/ThemeDropdwn";
+import Confetti from "react-confetti";
 import { useParams } from "react-router-dom";
-
+import useWindowSize from "../../Hooks/UseWindowSize";
+import Cookies from "js-cookie";
 
 const Playground = ({ testcase, result }) => {
+  const { width, height } = useWindowSize();
   const [suboutput, setsuboutput] = useState([]);
   const [consol, setConsol] = useState(false);
   const [code, setCode] = useState("");
 
   const [testStatus, setTestStatus] = useState([]);
-const [helper, setHelper] = useState(false)
+  const [helper, setHelper] = useState(false);
   const [customInput, setCustomInput] = useState("");
   const [outputDetails, setOutputDetails] = useState(null);
   const [processing, setProcessing] = useState(null);
@@ -38,7 +41,10 @@ const [helper, setHelper] = useState(false)
   const ctrlPress = useKeyPress("Control");
   const [wrs, setWrs] = useState(false);
   const [problem, setProblem] = useState({});
+  const [accepted, setAccepted] = useState("");
+
   const { id } = useParams();
+  // console.log("id is " + id);
   const getProblemdata = async () => {
     try {
       const url = `http://localhost:5000/api/question/getQuestion/${id}`;
@@ -49,6 +55,26 @@ const [helper, setHelper] = useState(false)
       console.error(error);
     }
   };
+  const savecodes = async () => {
+    console.log("entered into savedcodes");
+     try {
+       const url = "http://localhost:5000/api/code";
+       const formData = {
+         langid: language.id,
+         codes: code,
+        };
+       const res = await axios.post(`${url}/submit/${id}`, formData, {
+         headers: {
+           "Content-Type": "application/json",
+           "auth-token": Cookies.get("auth-Tokensynex"),
+         },
+       });
+       const resp = res.data;
+       console.log(resp);
+     } catch (error) {
+      console.log(error)
+     }
+  }
   const onSelectChange = (sl) => {
     console.log("selected Option...", sl);
     setLanguage(sl);
@@ -57,7 +83,7 @@ const [helper, setHelper] = useState(false)
   useEffect(() => {
     getProblemdata();
   }, []);
-  
+
   const onChange = (action, data) => {
     switch (action) {
       case "code": {
@@ -69,16 +95,16 @@ const [helper, setHelper] = useState(false)
       }
     }
   };
+  // console.log(code);
   const urlL = "https://judge0-ce.p.rapidapi.com/submissions";
   const jhost = "judge0-ce.p.rapidapi.com";
   // const jkey = "60972d1385msh9924ca6b34704eep10cf7fjsn847f8c7b32b0";
   // const jkey = "b5e72c53c1mshbe98fcc00788cbap183624jsn24b3a07843ad";
   const jkey = "fdf905e00amsh129dca5d5ef50b9p1bf6b5jsnec112dfb068c";
-// async function someAsyncFunction(token) {
-//   return new Promise((resolve, reject) => {
-//     checkStatus(token, resolve, reject);
-//   });
-
+  // async function someAsyncFunction(token) {
+  //   return new Promise((resolve, reject) => {
+  //     checkStatus(token, resolve, reject);
+  //   });
 
   const submitbuffer = async (input, expectedOutput, i) => {
     try {
@@ -106,6 +132,7 @@ const [helper, setHelper] = useState(false)
       const token = response.data.token;
 
       const resok = await checkStatus(token, i);
+      console.log("status for each testcase " + resok);
       return resok;
     } catch (err) {
       // Handle any errors here
@@ -136,38 +163,50 @@ const [helper, setHelper] = useState(false)
 
   //   setWrs(true);
   // };
-const handleSubmit = async () => {
-  try {
-    setProcessing1(true);
-    setStatuscode(false);
-    setIsSubmitClick(true);
+  const handleSubmit = async () => {
+    try {
+      setProcessing1(true);
+      setStatuscode(false);
+      setIsSubmitClick(true);
 
-    if (!problem || !problem.testcase) {
-      console.error("Problem or testcase is not defined.");
-      return;
+      if (!problem || !problem.testcase) {
+        console.error("Problem or testcase is not defined.");
+        return;
+      }
+      const arr = problem.testcase.map(async (test, i) => {
+        const { input, output } = test;
+        console.log("test input " + test.input);
+        console.log("test ouput " + test.output);
+        const res = await submitbuffer(input, output, i);
+        console.log("final result is after checking all testcase " + res);
+        return res;
+      });
+
+      const arr1 = await Promise.all(arr);
+      console.log(arr1);
+      let flag = true;
+      for (let i = 0; i < arr1.length; i++){
+        if (arr1[i] === false) {
+          flag = false;
+          break;
+        }
+      }
+      if (flag === true) {
+        setAccepted(true);
+      }
+      console.log("accepted" + accepted);
+      setTestStatus(arr1);
+      // Handle the results as needed
+      // ...
+
+      // Set the processing flag to false
+      setHelper(!helper);
+      setProcessing1(false);
+    } catch (error) {
+      console.error("Error in handleSubmit:", error);
+      // Handle any errors here
     }
-
-    const arr = problem.testcase.map(async (test, i) => {
-      const { input, output } = test;
-      const res = await submitbuffer(input, output, i);
-      return res;
-    });
-
-    const arr1 = await Promise.all(arr);
-    console.log(arr1);
-setTestStatus(arr1)
-    // Handle the results as needed
-    // ...
-
-    // Set the processing flag to false
-    setHelper(!helper)
-    setProcessing1(false);
-  } catch (error) {
-    console.error("Error in handleSubmit:", error);
-    // Handle any errors here
-  }
-};
-
+  };
 
   const handleCompile = () => {
     setProcessing(true);
@@ -291,8 +330,6 @@ setTestStatus(arr1)
           correct = true;
         }
 
-     
-
         return correct;
       }
     } catch (err) {
@@ -321,7 +358,7 @@ setTestStatus(arr1)
   }, []);
 
   const showSuccessToast = (msg) => {
-    toast.success(msg || `Compiled Successfully!`, {
+    toast.success(msg || `Accepted!`, {
       position: "top-right",
       autoClose: 1000,
       hideProgressBar: false,
@@ -341,11 +378,28 @@ setTestStatus(arr1)
       draggable: true,
       progress: undefined,
     });
-};
-  
- return (
+  };
+  const showToastMessage = () => {
+    toast.success("Accepted", {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+  return (
     <div className="flex flex-col bg-primary relative overflow-x-hidden">
       {/* <TopNav /> */}
+      {accepted === true ? (
+        <div>
+          <Confetti
+            gravity={0.3}
+            tweenDuration={4000}
+            width={width - 1}
+            height={height - 1}
+          />
+          <ToastContainer />
+        </div>
+      ) : (
+        <div className="text-red-500 font-semibold text-base"></div>
+      )}
       <Split
         className="h-[calc(100vh-94px)]"
         direction="vertical"
@@ -406,7 +460,10 @@ setTestStatus(arr1)
                       {processing ? "Processing..." : "Compile and Execute"}
                     </button>
                     <button
-                      onClick={handleSubmit}
+                      onClick={() => {
+                        handleSubmit();
+                        savecodes();
+                      }}
                       disabled={!code}
                       className={classnames(
                         "mb-8 px-4 py-2 font-medium items-center transition-all focus:outline-none inline-flex text-sm text-white bg-dark-green-s hover:bg-green-3 rounded-lg",
@@ -425,9 +482,7 @@ setTestStatus(arr1)
                     </>
                   )}
                   {!statuscode &&
-                   testStatus.map((e,i) => {
-                    
-                
+                    testStatus.map((e, i) => {
                       if (!e) {
                         return (
                           <div className="bg-red-600 py-1 px-2 rounded-md">

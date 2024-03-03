@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaGithub} from "react-icons/fa";
-import { FcGoogle} from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 import { auth, provider } from "../../firebase-config";
 import {
   signInWithEmailAndPassword,
@@ -14,9 +14,9 @@ import Cookies from "js-cookie";
 
 const Login = (props) => {
   let navigate = useNavigate();
- 
+
   const [credential, setCredential] = useState({ email: "", password: "" });
- 
+
   //It defines a state variable called credential using the useState hook which holds the user's email and password.
   //The handleSignIn function is an asynchronous function that handles the sign-in process. It first calls the signInWithEmailAndPassword function  with the provided email and password to authenticate the user. The result is stored in the userCr variable.
   const handleSignIn = async () => {
@@ -85,7 +85,7 @@ const Login = (props) => {
 
     navigate("/dashboard");
   };
-  
+
   const sendPasswordReset = async (email) => {
     try {
       await sendPasswordResetEmail(auth, email);
@@ -96,10 +96,9 @@ const Login = (props) => {
     }
   };
 
-    const handleResetClick = () => {
-      navigate("/reset");
-    };
-
+  const handleResetClick = () => {
+    navigate("/reset");
+  };
 
   // const signinwithgithub = async  () => {
   //   const signin = await signInWithPopup(auth, provider);
@@ -129,7 +128,7 @@ const Login = (props) => {
 
   //   navigate("/dashboard");
   // };
-  
+
   return (
     <section className="absolute w-full h-full">
       <div
@@ -273,7 +272,9 @@ const Login = (props) => {
                 </form>
               </div>
               <div className="px-5 py-2 text-xs flex justify-center items-center text-center text-white">
-                <button onClick={handleResetClick}>Forget your password?</button>
+                <button onClick={handleResetClick}>
+                  Forget your password?
+                </button>
               </div>
               <div className="px-5 py-2 text-xs flex justify-between items-center text-white">
                 <p>Don't have an account?</p>

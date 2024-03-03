@@ -10,6 +10,7 @@ import mongoconnect from "./db.js";
 import filter from "./Middleware/Middleware.js";
 import question from "./Routes/Questions.js";
 import user from "./Routes/auth.js"; 
+import code from "./Routes/Submissioncodes.js"
 import xss from 'xss';
 import socketManager from "./SocketManager.js";
 import { createServer } from "http"; // Use createServer from http module
@@ -171,23 +172,9 @@ io.on("connection", (socket) => {
 
 // const mongoose = require("mongoose");
 mongoconnect();
-
-//use of middlewares
-
-// app.use((res, req, next) => {
-//   console.log("HTTP Method - " + req.method + ", URL -" + req.URL);
-//   next();
-// });
-
-//as the response send by controller in form of string so we convert it in form of json
-
-// app.use("/users", userRouter);
-// app.use("/visitor", visitor);
-// app.get("/:id", (req, res) => {
-//   res.sendFile(path.join(__dirname, "client/build", "index.html"));
-// });
 app.use("/api/question", question);
 app.use("/api/auth", user);
+app.use("/api/code",code)
 // app.use('/api',Meet)
 app.get("/", (req, res) => {
   res.send("hello");

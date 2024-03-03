@@ -8,7 +8,7 @@ import { TiStarOutline } from "react-icons/ti";
 
 const ProblemDescription = () => {
  const [problem, setProblem] = useState({});
-  const { id } = useParams()
+  const { id } = useParams();
   const getProblemdata = async () => {
     try {
       const url = `http://localhost:5000/api/question/getQuestion/${id}`;
