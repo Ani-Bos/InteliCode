@@ -62,7 +62,9 @@ const Playground = ({ testcase, result }) => {
        const formData = {
          langid: language.id,
          codes: code,
-        };
+       };
+       const auth = Cookies.get("auth-Tokensynex");
+       console.log("auth " + auth);
        const res = await axios.post(`${url}/submit/${id}`, formData, {
          headers: {
            "Content-Type": "application/json",
